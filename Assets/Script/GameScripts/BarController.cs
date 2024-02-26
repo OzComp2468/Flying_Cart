@@ -1,6 +1,8 @@
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class BarController : MonoBehaviour
 {
@@ -23,7 +25,9 @@ public class BarController : MonoBehaviour
     public AudioClip slowWoosh;
 
 
-    // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    //jump button (dont see after jumping)
+    public Image button;
+    
 
 
 
@@ -108,4 +112,37 @@ public class BarController : MonoBehaviour
     }
 
     
+    public void YeyJump()
+    {
+        // If space bar is pressed, launch the player forward
+        if (moreForce == true && fillImage.fillAmount < 0.5)
+        {
+            AS.PlayOneShot(slowWoosh);
+            LaunchPlayer();
+            moreForce = false;
+            fillImage.enabled = false;
+        }
+        if (moreForce == true && fillImage.fillAmount > 0.5)
+        {
+            AS.PlayOneShot(fastWoosh);
+            LaunchPlayer();
+            moreForce = false;
+            fillImage.enabled = false;
+        }
+
+
+        // dont see the jump button
+        if (moreForce == false)
+        {
+           button.enabled = false;
+            
+
+        }
+
+
+
+
+    }
+
+
 }
