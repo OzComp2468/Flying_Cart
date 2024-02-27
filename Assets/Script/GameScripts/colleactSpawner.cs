@@ -16,7 +16,7 @@ public class colleactSpawner : MonoBehaviour
         prefabCounts.Add(prefabs[0], 80);
         prefabCounts.Add(prefabs[1], 200);
         prefabCounts.Add(prefabs[2], 80);
-        prefabCounts.Add(prefabs[3], 150);
+        prefabCounts.Add(prefabs[3], 100);
         spawnPrefab();
     }
 

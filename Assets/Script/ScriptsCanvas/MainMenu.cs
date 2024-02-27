@@ -35,7 +35,11 @@ public class MainMenu : MonoBehaviour
 
 
 
+    public void ResetHigh()
+    {
+        PlayerPrefs.DeleteAll();
 
+    }
 
 
 

@@ -8,21 +8,25 @@ public class UI : MonoBehaviour
     //General
     public GameObject endPanel;
     private bool canTouchGround;
-    private bool TouchGround;
+    public static bool TouchGround;
     private Rigidbody2D rb2d;
    
     //Distance
     public Transform startPoint;
     public TextMeshProUGUI distanceText;
     private float Distance;
-
     public TextMeshProUGUI YouHaveReached;
-    public TextMeshProUGUI YouHaveColected;
 
-    //Money
+    //Highscore
+    public static float HighScore;
+    public TextMeshProUGUI HighscoreText;
+
+    //Coins
+    public TextMeshProUGUI allCoins;
     public TextMeshProUGUI coinsText;
-    private int Coins;
-
+    public int coins;
+    public static int coinCounter;
+    private int coinsThisRound;
 
     //Audio
     public AudioSource AS;
@@ -32,6 +36,7 @@ public class UI : MonoBehaviour
     public AudioClip tryAgain;
     public AudioClip AirPodWoosh;
     public AudioClip Loser;
+    public AudioClip newhighscore;
 
 
 
@@ -40,16 +45,25 @@ public class UI : MonoBehaviour
         canTouchGround = true;
         endPanel.SetActive(false);
         rb2d = GetComponent<Rigidbody2D>();
+        HighscoreText.text = "High Score: " + PlayerPrefs.GetFloat("HighScore",0).ToString("F1") +"m";
+        coins = PlayerPrefs.GetInt("TotalCoins", 0);
+        coinCounter = 0;
+        coinsThisRound = 0;
+
     }
 
     
     void Update()
     {
-        if (Coins < 0) { Coins = 0; }
+       
         distancePast();
-        collectingCoins();
-    }
+        coinCollecting();
 
+
+    }
+   
+    
+    //Ground collision logic
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Floor" && canTouchGround == true)
@@ -59,44 +73,62 @@ public class UI : MonoBehaviour
             Debug.Log("GameOver");
             StartCoroutine("gameOver");
             rb2d.gravityScale = 5;
+            TouchGround = true;
             
         }
-        if(collision.gameObject.tag == "Ground")
+        if (collision.gameObject.tag == "Ground")
         {
             TouchGround = true;
         }
+        
     }
-
+    
+    //GameOver stuff
     IEnumerator gameOver()
     {
         yield return new WaitForSeconds(2.4f);
         endPanel.SetActive(true);
         distanceText.enabled = false;
-        coinsText.enabled = false;
         rb2d.bodyType = RigidbodyType2D.Static;
+        coinsText.enabled = false;
+        EndRound();
+
+
+
     }
     IEnumerator LoserEnd()
     {
         yield return new WaitForSeconds(1.6f);
         AS.PlayOneShot(Loser);
     }
-    void distancePast()
+    
+    void distancePast()//UI distance
     {
         Distance = (transform.position.x - startPoint.transform.position.x);
         if (Distance < 0) { Distance = 0; }
         distanceText.text = "Distance:" + Distance.ToString("F1") + "m";
 
         YouHaveReached.text = "You Have Reached:" + Distance.ToString("F1") + "m";
+       
+        //Highscore
+        if(Distance > PlayerPrefs.GetFloat("HighScore",0))
+        {
+            PlayerPrefs.SetFloat("HighScore", Distance);
+            HighscoreText.text = "High Score: " + Distance.ToString("F1")+"m";
+        }
+        
     }
-    void collectingCoins()
+    
+    void coinCollecting()
     {
-        coinsText.text = "Coins Collected:" + Coins.ToString();
+        if (coinsThisRound< 0) { coinsThisRound = 0; }
+        coinsText.text = coinsThisRound.ToString() + " Coins collected";
+        allCoins.text = "Total Coins: " + coins.ToString();
 
-        YouHaveColected.text = "Coins Collected:" + Coins.ToString();
+        
     }
 
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)//Collectables and start
     {
         if(collision.tag == "Respawn" && TouchGround == true)
         {
@@ -105,40 +137,49 @@ public class UI : MonoBehaviour
         }
         if(collision.tag == "Pass")
         {
-            StopAllCoroutines();    
+            StopAllCoroutines();   
+            TouchGround = false;
         }
 
         //Collectable
         switch (collision.tag) 
         {
             case "AirPod":
-                rb2d.AddForce(transform.up * 20, ForceMode2D.Impulse );
+                rb2d.AddForce(transform.up * 20, ForceMode2D.Impulse);
                 Destroy(collision.gameObject);
                 AS.PlayOneShot(AirPodWoosh);
                 break;
 
             case "Coin":
-                Coins++;
+                coinCounter++;
+                coinsThisRound++;
                 Destroy(collision.gameObject);
                 AS.PlayOneShot(coinPick);
                 break;
 
             case "AntiCoin":
-                Coins--;
+                coinsThisRound--;
                 Destroy(collision.gameObject);
                 AS.PlayOneShot(coinDrop);
                 break;
 
             case "Weight":
 
-                GetComponent<Rigidbody2D>().gravityScale = 5;
+                GetComponent<Rigidbody2D>().gravityScale ++;
                 Destroy(collision.gameObject);
                 AS.PlayOneShot(fallingDown);
                 break;
-
-
-
         }
 
     }
+    public void EndRound()
+    {
+        coins += coinsThisRound;
+        SaveTotalCoins();
+    }
+    void SaveTotalCoins()
+    {
+        PlayerPrefs.SetInt("TotalCoins", coins);
+    }
+    
 }
