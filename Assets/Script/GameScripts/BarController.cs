@@ -35,7 +35,7 @@ public class BarController : MonoBehaviour
 
 
     //jump button (dont see after jumping)
-    public Button jumpButton;
+    public Image jumpButton;
 
 
     //Extra Rocket stuff
@@ -145,7 +145,8 @@ public class BarController : MonoBehaviour
             LaunchPlayer();
             moreForce = false;
             fillImage.enabled = false;
-            jumpButton.gameObject.SetActive(false);
+            //jumpButton.gameObject.SetActive(false);
+            jumpButton.enabled = false;
         }
         if (moreForce == true && fillImage.fillAmount > 0.5)
         {
@@ -153,7 +154,8 @@ public class BarController : MonoBehaviour
             LaunchPlayer();
             moreForce = false;
             fillImage.enabled = false;
-            jumpButton.gameObject.SetActive(false);
+            //jumpButton.gameObject.SetActive(false);
+            jumpButton.enabled = false;
         }
 
     }
