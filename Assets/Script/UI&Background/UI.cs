@@ -9,7 +9,7 @@ public class UI : MonoBehaviour
     public GameObject endPanel;
     private bool canTouchGround;
     public static bool TouchGround;
-    private Rigidbody2D rb2d;
+    public static Rigidbody2D rb2d;
    
     //Distance
     public Transform startPoint;
@@ -24,9 +24,10 @@ public class UI : MonoBehaviour
     //Coins
     public TextMeshProUGUI allCoins;
     public TextMeshProUGUI coinsText;
-    public int coins;
+    public static float coins;
     public static int coinCounter;
     private int coinsThisRound;
+    public TextMeshProUGUI TotalCoins;
 
     //Audio
     public AudioSource AS;
@@ -46,9 +47,10 @@ public class UI : MonoBehaviour
         endPanel.SetActive(false);
         rb2d = GetComponent<Rigidbody2D>();
         HighscoreText.text = "High Score: " + PlayerPrefs.GetFloat("HighScore",0).ToString("F1") +"m";
-        coins = PlayerPrefs.GetInt("TotalCoins", 0);
+        coins = PlayerPrefs.GetFloat("TotalCoins", coins);
         coinCounter = 0;
         coinsThisRound = 0;
+        TotalCoins.text = "Total Coins: " + coins; 
 
     }
 
@@ -58,7 +60,7 @@ public class UI : MonoBehaviour
        
         distancePast();
         coinCollecting();
-
+        
 
     }
    
@@ -91,6 +93,7 @@ public class UI : MonoBehaviour
         distanceText.enabled = false;
         rb2d.bodyType = RigidbodyType2D.Static;
         coinsText.enabled = false;
+        TotalCoins.enabled = false;
         EndRound();
 
 
@@ -100,6 +103,7 @@ public class UI : MonoBehaviour
     {
         yield return new WaitForSeconds(1.6f);
         AS.PlayOneShot(Loser);
+        EndRound();
     }
     
     void distancePast()//UI distance
@@ -118,7 +122,7 @@ public class UI : MonoBehaviour
         }
         
     }
-    
+
     void coinCollecting()
     {
         if (coinsThisRound< 0) { coinsThisRound = 0; }
@@ -179,7 +183,8 @@ public class UI : MonoBehaviour
     }
     void SaveTotalCoins()
     {
-        PlayerPrefs.SetInt("TotalCoins", coins);
+        PlayerPrefs.SetFloat("TotalCoins", coins);
+        PlayerPrefs.Save();
     }
-    
+   
 }

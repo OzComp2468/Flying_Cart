@@ -13,10 +13,10 @@ public class colleactSpawner : MonoBehaviour
 
     void Start()
     {
-        prefabCounts.Add(prefabs[0], 80);
-        prefabCounts.Add(prefabs[1], 200);
-        prefabCounts.Add(prefabs[2], 80);
-        prefabCounts.Add(prefabs[3], 100);
+        prefabCounts.Add(prefabs[0], 80);//AntiCoins
+        prefabCounts.Add(prefabs[1], 200);//Coins
+        prefabCounts.Add(prefabs[2], 80);//Weights
+        prefabCounts.Add(prefabs[3], 100);//AirPods
         spawnPrefab();
     }
 

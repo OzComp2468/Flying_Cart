@@ -43,8 +43,10 @@ public class BarController : MonoBehaviour
     public ParticleSystem xtraRocket;
 
 
+
     void Start()
     {
+      
         //jumpButton.gameObject.SetActive(true);
         maxRota = 2;
         minRota = -2;
@@ -53,6 +55,7 @@ public class BarController : MonoBehaviour
         spacePressed = false;
         moreForce = true;
         playerRigidbody = GetComponent<Rigidbody2D>();
+       
     }
 
     void Update()
@@ -61,6 +64,7 @@ public class BarController : MonoBehaviour
         spacePress();
         Rotation();
         FillAndEmptyBar();
+        
     }
 
     void FillAndEmptyBar()//Power Meter fills & emptying
@@ -138,7 +142,6 @@ public class BarController : MonoBehaviour
 
     public void YeyJump()//Mobile control
     {
-       
         if (moreForce == true && fillImage.fillAmount < 0.5)
         {
             AS.PlayOneShot(slowWoosh);
@@ -147,7 +150,7 @@ public class BarController : MonoBehaviour
             fillImage.enabled = false;
             jumpButton.gameObject.SetActive(false);
         }
-        if (moreForce == true && fillImage.fillAmount > 0.5)
+        if (moreForce == true && fillImage.fillAmount > 0.5 && fillImage.fillAmount < 0.8f)
         {
             AS.PlayOneShot(fastWoosh);
             LaunchPlayer();
@@ -155,19 +158,33 @@ public class BarController : MonoBehaviour
             fillImage.enabled = false;
             jumpButton.gameObject.SetActive(false);
         }
+        if (moreForce == true && fillImage.fillAmount > 0.8)
+        {
+            jumpButton.gameObject.SetActive(false);
+            LaunchPlayer();
+            bigStart.Play();
+            AS.PlayOneShot(Thruster);
+            moreForce = false;
+            fillImage.enabled = false;
+        }
 
     }
 
     public void extraPower()//Extra boost while in the air
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow) && extraRocket == true && UI.TouchGround == false)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && extraRocket && !UI.TouchGround
+            && PlayerUpgrades.haveRocket&& PlayerUpgrades.rocketOwned == 1)
         {
+            // Deduct the rocket
+            PlayerUpgrades.haveRocket = false;
+            PlayerUpgrades.rocketOwned = 0;
             playerRigidbody.AddForce(transform.right * 20, ForceMode2D.Impulse);
             playerRigidbody.AddForce(transform.up * 5, ForceMode2D.Impulse);
             xtraRocket.Play();
             AS.PlayOneShot(xtrarocket);
             extraRocket = false;
-
         }
     }
+
+   
 }

@@ -9,7 +9,7 @@ public class Mooooove : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         dirX = 0;
@@ -18,7 +18,7 @@ public class Mooooove : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
 

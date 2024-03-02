@@ -28,12 +28,17 @@ public class MainMenu : MonoBehaviour
         print("Game Closed");
     }
 
+    public void Shoptwo()
+    {
+        SceneManager.LoadScene("Shop2.0");
+        
+
+    }
+
     public void Shop()
     {
         SceneManager.LoadScene("Shop");
     }
-
-
 
     public void ResetHigh()
     {
@@ -42,6 +47,9 @@ public class MainMenu : MonoBehaviour
     }
 
 
-
+    public void Main()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 
 }
